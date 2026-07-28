@@ -390,158 +390,7 @@ function renderSensitivity(sens) {
 }
 
 // ============================================================
-// 6. ADMIN PANEL
-// ============================================================
-function renderAdminIPList() {
-    const container = document.getElementById('adminIpList');
-    const ips = IPManager.getAllIPs();
-    
-    let html = `
-        <div class="admin-ip-item header">
-            <span>IP</span>
-            <span>Lượt còn lại</span>
-            <span>Role</span>
-            <span>Hành động</span>
-        </div>
-    `;
-    
-    if (ips.length === 0) {
-        html += `<div class="admin-ip-item" style="text-align:center;color:var(--text-secondary);padding:1rem;">Chưa có IP nào</div>`;
-    } else {
-        for (const ip of ips) {
-            const isCurrent = ip.ip === currentIP;
-            html += `
-                <div class="admin-ip-item" style="${isCurrent ? 'border:1px solid var(--primary);' : ''}">
-                    <span>${ip.ip} ${isCurrent ? '👈' : ''}</span>
-                    <span>${ip.remaining}</span>
-                    <span><span class="role-badge ${ip.role}">${ip.role.toUpperCase()}</span></span>
-                    <span>
-                        <button class="btn-del" onclick="window._adminRemoveIP('${ip.ip}')" title="Xóa IP">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                        <button class="btn-del" onclick="window._adminToggleRole('${ip.ip}')" title="Chuyển role" style="color:#fbbf24;">
-                            <i class="fas fa-${ip.role === 'admin' ? 'user' : 'crown'}"></i>
-                        </button>
-                        <button class="btn-del" onclick="window._adminResetUsed('${ip.ip}')" title="Reset lượt dùng" style="color:#4ade80;">
-                            <i class="fas fa-sync"></i>
-                        </button>
-                    </span>
-                </div>
-            `;
-        }
-    }
-    
-    container.innerHTML = html;
-}
-
-// Admin functions
-window._adminRemoveIP = function(ip) {
-    if (!confirm(`Xóa IP ${ip}?`)) return;
-    const result = IPManager.removeIP(ip);
-    if (result.success) {
-        renderAdminIPList();
-        showToast(result.message);
-    } else {
-        showToast(result.message, true);
-    }
-};
-
-window._adminToggleRole = function(ip) {
-    const info = IPManager.getIPInfo(ip);
-    if (!info) return;
-    const newRole = info.role === 'admin' ? 'user' : 'admin';
-    const result = IPManager.updateRole(ip, newRole);
-    if (result.success) {
-        renderAdminIPList();
-        showToast(result.message);
-        if (ip === currentIP) updateUserRoleUI();
-    } else {
-        showToast(result.message, true);
-    }
-};
-
-window._adminResetUsed = function(ip) {
-    if (!confirm(`Reset lượt dùng cho ${ip}?`)) return;
-    const result = IPManager.resetUsed(ip);
-    if (result.success) {
-        renderAdminIPList();
-        showToast(result.message);
-        if (ip === currentIP) {
-            const remaining = IPManager.getRemainingDisplay(currentIP);
-            updateLimitDisplay(remaining);
-        }
-    } else {
-        showToast(result.message, true);
-    }
-};
-
-function openAdminPanel() {
-    document.getElementById('adminModal').style.display = 'flex';
-    renderAdminIPList();
-}
-
-function closeAdminPanel() {
-    document.getElementById('adminModal').style.display = 'none';
-}
-
-function handleAddIP() {
-    const ip = document.getElementById('adminAddIp').value.trim();
-    const limit = parseInt(document.getElementById('adminAddLimit').value) || 5;
-    const role = document.getElementById('adminAddRole').value;
-    
-    if (!ip) {
-        showToast('Vui lòng nhập IP!', true);
-        return;
-    }
-    
-    const result = IPManager.addIP(ip, role, limit);
-    if (result.success) {
-        renderAdminIPList();
-        document.getElementById('adminAddIp').value = '';
-        showToast(result.message);
-    } else {
-        showToast(result.message, true);
-    }
-}
-
-function updateUserRoleUI() {
-    const role = IPManager.getRole(currentIP);
-    const remaining = IPManager.getRemainingDisplay(currentIP);
-    document.getElementById('userRoleDisplay').textContent = role === 'admin' ? '👑 Admin' : '👤 User';
-    document.getElementById('maxLimitDisplay').textContent = role === 'admin' ? '∞' : '5';
-    updateLimitDisplay(remaining);
-}
-
-// Export/Import
-function exportData() {
-    const data = IPManager.exportData();
-    const blob = new Blob([data], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `ip_data_${new Date().toISOString().slice(0,10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast('✅ Đã export dữ liệu IP');
-}
-
-function importData(file) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const result = IPManager.importData(e.target.result);
-        if (result.success) {
-            renderAdminIPList();
-            updateUserRoleUI();
-            showToast(result.message);
-        } else {
-            showToast(result.message, true);
-        }
-    };
-    reader.readAsText(file);
-}
-
-// ============================================================
-// 7. MAIN CONTROLLER
+// 6. MAIN CONTROLLER
 // ============================================================
 function withLoading(callback, message = 'Đang xử lý...') {
     const overlay = document.getElementById('loadingOverlay');
@@ -675,11 +524,22 @@ function copyResult() {
 }
 
 // ============================================================
-// 8. INITIALIZATION
+// 7. INITIALIZATION
 // ============================================================
 async function init() {
     currentIP = await IPManager.getIP();
     document.getElementById('ipDisplay').textContent = currentIP;
+    
+    // Kiểm tra session admin từ admin.html
+    const adminSession = localStorage.getItem('ff_admin_session');
+    if (adminSession === 'true') {
+        // Nếu đã đăng nhập admin, tự động set role admin cho IP hiện tại
+        const info = IPManager.getOrCreateIP(currentIP);
+        if (info.role !== 'admin') {
+            IPManager.updateRole(currentIP, 'admin');
+            showToast('👑 Đã kích hoạt quyền Admin!');
+        }
+    }
     
     const role = IPManager.getRole(currentIP);
     const remaining = IPManager.getRemainingDisplay(currentIP);
@@ -687,10 +547,6 @@ async function init() {
     document.getElementById('userRoleDisplay').textContent = role === 'admin' ? '👑 Admin' : '👤 User';
     document.getElementById('maxLimitDisplay').textContent = role === 'admin' ? '∞' : '5';
     updateLimitDisplay(remaining);
-    
-    if (role === 'admin') {
-        document.getElementById('menuAdmin').style.display = 'flex';
-    }
     
     const autoDevice = detectDeviceFromUA();
     if (autoDevice) {
@@ -716,7 +572,7 @@ async function init() {
 }
 
 // ============================================================
-// 9. EVENT BINDING
+// 8. EVENT BINDING
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
     // Sidebar
@@ -755,14 +611,13 @@ document.addEventListener('DOMContentLoaded', function() {
         sidebar.classList.remove('open');
         overlay.classList.remove('active');
     });
+    document.getElementById('menuAdmin').addEventListener('click', function() {
+        // Chuyển đến admin.html
+        window.location.href = 'admin.html';
+    });
     document.getElementById('menuInfo').addEventListener('click', function() {
         const role = IPManager.getRole(currentIP);
         showToast(`📖 ${role === 'admin' ? 'Admin: Không giới hạn' : 'Mỗi IP 5 lượt/ngày'}`);
-        sidebar.classList.remove('open');
-        overlay.classList.remove('active');
-    });
-    document.getElementById('menuAdmin').addEventListener('click', function() {
-        openAdminPanel();
         sidebar.classList.remove('open');
         overlay.classList.remove('active');
     });
@@ -781,34 +636,6 @@ document.addEventListener('DOMContentLoaded', function() {
             showToast(`📱 ${currentDevice.brand} ${currentDevice.model}`);
         } else {
             showToast('📱 Chưa có thông tin');
-        }
-    });
-    
-    // Admin panel
-    document.getElementById('adminModalClose').addEventListener('click', closeAdminPanel);
-    document.getElementById('adminModal').addEventListener('click', function(e) {
-        if (e.target === this) closeAdminPanel();
-    });
-    document.getElementById('adminAddBtn').addEventListener('click', handleAddIP);
-    document.getElementById('adminAddIp').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') handleAddIP();
-    });
-    document.getElementById('adminExportBtn').addEventListener('click', exportData);
-    document.getElementById('adminImportBtn').addEventListener('click', function() {
-        document.getElementById('adminImportFile').click();
-    });
-    document.getElementById('adminImportFile').addEventListener('change', function(e) {
-        if (this.files.length > 0) {
-            importData(this.files[0]);
-            this.value = '';
-        }
-    });
-    document.getElementById('adminResetBtn').addEventListener('click', function() {
-        const result = IPManager.resetAll();
-        if (result.success) {
-            renderAdminIPList();
-            updateUserRoleUI();
-            showToast(result.message);
         }
     });
     
