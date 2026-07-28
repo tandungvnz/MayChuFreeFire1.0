@@ -1,1 +1,59 @@
-Xin chào
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Free Fire Sensitivity Generator</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container" id="app">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="logo">🎯</div>
+            <div class="title-group">
+                <h1>Free Fire · Sensi</h1>
+                <p>tối ưu độ nhạy theo thiết bị</p>
+            </div>
+        </div>
+        <div class="desc">⚡ Nhập tên điện thoại hoặc để hệ thống tự nhận diện — sinh profile riêng cho từng máy</div>
+
+        <!-- INPUT -->
+        <div class="input-group">
+            <input type="text" id="phoneInput" placeholder="VD: iPhone 14 Pro Max, Galaxy S23..." />
+            <button class="btn btn-primary" id="detectBtn">📡 Nhận diện</button>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="btn-group">
+            <button class="btn btn-primary" id="generateBtn">⚡ Tạo độ nhạy</button>
+            <button class="btn btn-secondary" id="randomBtn">🎲 Random lại</button>
+        </div>
+
+        <!-- LOADING -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- DEVICE INFO -->
+        <div id="deviceCard" class="card result-animate" style="display:none;">
+            <div class="card-title">📱 THÔNG TIN THIẾT BỊ</div>
+            <div class="device-grid" id="deviceGrid"></div>
+        </div>
+
+        <!-- SENSITIVITY -->
+        <div id="sensCard" class="card result-animate" style="display:none;">
+            <div class="card-title">🎮 ĐỘ NHẠY FREE FIRE</div>
+            <div class="sensitivity-grid" id="sensGrid"></div>
+        </div>
+
+        <!-- FOOTER ACTIONS -->
+        <div class="footer-actions">
+            <button class="btn btn-outline" id="copyBtn">📋 Copy độ nhạy</button>
+            <span class="copy-toast" id="copyToast">✅ Đã sao chép!</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
