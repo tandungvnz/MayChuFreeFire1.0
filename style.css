@@ -169,7 +169,8 @@ body {
     color: var(--text-primary);
 }
 
-.sidebar-ip, .sidebar-limit {
+.sidebar-ip,
+.sidebar-limit {
     display: flex;
     align-items: center;
     gap: 0.8rem;
@@ -309,10 +310,12 @@ body {
     background: #4ade80;
     box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
 }
+
 .status-dot.orange {
     background: #fb923c;
     box-shadow: 0 0 8px rgba(251, 146, 60, 0.4);
 }
+
 .status-dot.red {
     background: #f87171;
     box-shadow: 0 0 8px rgba(248, 113, 113, 0.4);
@@ -580,7 +583,9 @@ body {
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .loading-text {
@@ -914,6 +919,11 @@ body {
     font-size: 0.75rem;
 }
 
+.admin-actions .btn-sm {
+    padding: 0.4rem 1rem;
+    font-size: 0.75rem;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 480px) {
     .device-grid {
@@ -966,6 +976,13 @@ body {
     .admin-add-ip {
         grid-template-columns: 1fr;
         gap: 0.4rem;
+    }
+    .admin-actions {
+        flex-direction: column;
+    }
+    .admin-actions .btn-sm {
+        width: 100%;
+        justify-content: center;
     }
 }
 
