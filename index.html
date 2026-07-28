@@ -73,18 +73,18 @@
         <!-- HERO SECTION -->
         <div class="hero-section">
             <div class="hero-icon">🔥</div>
-            <h1 class="hero-title">Tạo độ nhạy <br />Free Fire</h1>
-            <p class="hero-desc">Tối ưu độ nhạy theo thiết bị của bạn</p>
+            <h1 class="hero-title">AI <span style="color:#ff6a00;">Sensi</span><br />Generator</h1>
+            <p class="hero-desc">Nhập bất kỳ từ khóa nào về điện thoại, AI sẽ tự động nhận diện</p>
         </div>
 
         <!-- INPUT SECTION -->
         <div class="input-section">
             <div class="input-wrapper">
-                <i class="fas fa-mobile-alt input-icon"></i>
+                <i class="fas fa-robot input-icon"></i>
                 <input 
                     type="text" 
                     id="phoneInput" 
-                    placeholder="Nhập tên điện thoại..." 
+                    placeholder='VD: "con chip snap mới nhất", "iphone 14 pro xanh", "samsung gập"' 
                     autocomplete="off"
                 />
                 <button class="clear-input" id="clearInput" style="display:none;">
@@ -93,8 +93,8 @@
             </div>
             <div class="button-group">
                 <button class="btn btn-detect" id="detectBtn">
-                    <i class="fas fa-search"></i>
-                    <span>Nhận diện</span>
+                    <i class="fas fa-brain"></i>
+                    <span>AI Nhận diện</span>
                 </button>
                 <button class="btn btn-generate" id="generateBtn">
                     <i class="fas fa-bolt"></i>
@@ -107,7 +107,7 @@
         <div class="loading-overlay" id="loadingOverlay">
             <div class="loading-content">
                 <div class="spinner"></div>
-                <p class="loading-text">Đang phân tích thiết bị...</p>
+                <p class="loading-text" id="loadingText">AI đang phân tích từ khóa...</p>
             </div>
         </div>
 
@@ -115,9 +115,14 @@
         <div id="deviceCard" class="card" style="display:none;">
             <div class="card-header">
                 <i class="fas fa-microchip"></i>
-                <span>THIẾT BỊ</span>
+                <span>AI PHÂN TÍCH THIẾT BỊ</span>
+                <span style="font-size:0.6rem;color:#ff6a00;" id="matchConfidence"></span>
             </div>
             <div class="device-grid" id="deviceGrid"></div>
+            <div style="margin-top:0.8rem;padding-top:0.5rem;border-top:1px solid var(--border-color);font-size:0.65rem;color:var(--text-secondary);">
+                <i class="fas fa-magic"></i> 
+                <span id="aiReason">AI suy luận từ từ khóa</span>
+            </div>
         </div>
 
         <!-- SENSITIVITY CARD -->
