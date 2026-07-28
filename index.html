@@ -31,10 +31,6 @@
                 <i class="fas fa-history"></i>
                 <span>Lịch sử</span>
             </div>
-            <div class="menu-item" id="menuAdmin">
-                <i class="fas fa-crown"></i>
-                <span>Quản trị</span>
-            </div>
             <div class="menu-item" id="menuInfo">
                 <i class="fas fa-info-circle"></i>
                 <span>Hướng dẫn</span>
@@ -50,8 +46,8 @@
                 <span id="ipDisplay">Đang lấy IP...</span>
             </div>
             <div class="sidebar-limit">
-                <i class="fas fa-tachometer-alt"></i>
-                <span>Lượt còn lại: <span id="limitDisplay">5</span></span>
+                <i class="fas fa-infinity"></i>
+                <span>Không giới hạn lượt</span>
             </div>
         </div>
     </div>
@@ -68,13 +64,10 @@
                 <span class="nav-title">Sensi</span>
             </div>
             <div class="nav-actions">
-                <span class="nav-limit-badge" id="navLimitBadge">5</span>
+                <span class="nav-limit-badge" id="navLimitBadge">∞</span>
                 <button class="nav-device-btn" id="navDeviceBtn" title="Thông tin máy">
                     <i class="fas fa-mobile-alt"></i>
                 </button>
-                <a href="admin.html" class="nav-admin-btn" title="Quản trị">
-                    <i class="fas fa-crown"></i>
-                </a>
             </div>
         </nav>
 
@@ -166,8 +159,8 @@
         <!-- FOOTER -->
         <div class="footer">
             <div class="footer-limit-info">
-                <i class="fas fa-info-circle"></i>
-                <span>Mỗi IP được tạo <strong id="maxLimitDisplay">5</strong> độ nhạy/ngày</span>
+                <i class="fas fa-infinity" style="color:var(--primary);"></i>
+                <span>Không giới hạn số lượt tạo độ nhạy</span>
             </div>
             <div class="footer-copy">
                 <button class="btn btn-copy" id="copyBtn">
@@ -186,7 +179,6 @@
         </div>
     </div>
 
-    <script src="ip-manager.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
