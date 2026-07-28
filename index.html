@@ -31,7 +31,7 @@
                 <i class="fas fa-history"></i>
                 <span>Lịch sử</span>
             </div>
-            <div class="menu-item" id="menuAdmin" style="display:none;">
+            <div class="menu-item" id="menuAdmin">
                 <i class="fas fa-crown"></i>
                 <span>Quản trị</span>
             </div>
@@ -72,6 +72,9 @@
                 <button class="nav-device-btn" id="navDeviceBtn" title="Thông tin máy">
                     <i class="fas fa-mobile-alt"></i>
                 </button>
+                <a href="admin.html" class="nav-admin-btn" title="Quản trị">
+                    <i class="fas fa-crown"></i>
+                </a>
             </div>
         </nav>
 
@@ -171,47 +174,6 @@
                     <i class="fas fa-copy"></i>
                     <span>Copy độ nhạy</span>
                 </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ADMIN PANEL MODAL -->
-    <div class="admin-modal" id="adminModal" style="display:none;">
-        <div class="admin-modal-content">
-            <div class="admin-modal-header">
-                <h3><i class="fas fa-crown" style="color:#fbbf24;"></i> Quản trị IP</h3>
-                <button class="admin-modal-close" id="adminModalClose">&times;</button>
-            </div>
-            <div class="admin-modal-body">
-                <div class="admin-ip-list" id="adminIpList">
-                    <div class="admin-ip-item header">
-                        <span>IP</span>
-                        <span>Lượt còn lại</span>
-                        <span>Role</span>
-                        <span>Hành động</span>
-                    </div>
-                </div>
-                <div class="admin-add-ip">
-                    <input type="text" id="adminAddIp" placeholder="Nhập IP..." />
-                    <input type="number" id="adminAddLimit" placeholder="Số lượt" value="5" min="0" max="999" />
-                    <select id="adminAddRole">
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                    <button class="btn btn-primary btn-sm" id="adminAddBtn">Thêm</button>
-                </div>
-                <div class="admin-actions" style="display:flex;gap:0.5rem;margin-top:0.8rem;padding-top:0.8rem;border-top:1px solid var(--border-color);flex-wrap:wrap;">
-                    <button class="btn btn-sm btn-primary" id="adminExportBtn" style="background:linear-gradient(145deg,#ff7e2e,#d85d0e);color:#0b0e1a;padding:0.4rem 1rem;border-radius:30px;border:none;cursor:pointer;font-weight:600;">
-                        <i class="fas fa-download"></i> Export
-                    </button>
-                    <button class="btn btn-sm btn-secondary" id="adminImportBtn" style="background:var(--bg-input);color:var(--text-primary);padding:0.4rem 1rem;border-radius:30px;border:1px solid var(--border-color);cursor:pointer;font-weight:600;">
-                        <i class="fas fa-upload"></i> Import
-                    </button>
-                    <input type="file" id="adminImportFile" accept=".json" style="display:none;" />
-                    <button class="btn btn-sm btn-danger" id="adminResetBtn" style="background:rgba(248,113,113,0.15);color:#f87171;padding:0.4rem 1rem;border-radius:30px;border:1px solid rgba(248,113,113,0.2);cursor:pointer;font-weight:600;">
-                        <i class="fas fa-trash"></i> Reset All
-                    </button>
-                </div>
             </div>
         </div>
     </div>
