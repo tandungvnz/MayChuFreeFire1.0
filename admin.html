@@ -1,1 +1,738 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Admin - Free Fire Sensi</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        /* Admin page styles */
+        .admin-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(ellipse at 20% 20%, #0f1a33, #080b17);
+            padding: 1rem;
+        }
 
+        .admin-container {
+            background: var(--bg-card);
+            border-radius: 30px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+
+        .admin-container .logo {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-container h1 {
+            text-align: center;
+            font-size: 1.5rem;
+            background: linear-gradient(to right, #f9d976, #f39c12);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.3rem;
+        }
+
+        .admin-container .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .admin-container .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .admin-container .form-group label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+        }
+
+        .admin-container .form-group input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .admin-container .form-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.15);
+        }
+
+        .admin-container .form-group input::placeholder {
+            color: #4a5a7a;
+        }
+
+        .admin-container .btn-login {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(145deg, #ff7e2e, #d85d0e);
+            border: none;
+            border-radius: 12px;
+            color: #0b0e1a;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .admin-container .btn-login:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(255, 107, 0, 0.4);
+        }
+
+        .admin-container .btn-login:active {
+            transform: scale(0.96);
+        }
+
+        .admin-container .error-msg {
+            background: rgba(248, 113, 113, 0.15);
+            border: 1px solid rgba(248, 113, 113, 0.2);
+            color: #f87171;
+            padding: 0.6rem 1rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .admin-container .error-msg.show {
+            display: block;
+        }
+
+        .admin-container .back-link {
+            text-align: center;
+            margin-top: 1.2rem;
+        }
+
+        .admin-container .back-link a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+
+        .admin-container .back-link a:hover {
+            color: var(--primary);
+        }
+
+        /* Admin panel inside */
+        .admin-panel {
+            display: none;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-panel .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-panel .stat-item {
+            background: var(--bg-input);
+            border-radius: 12px;
+            padding: 0.8rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .admin-panel .stat-item .number {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .admin-panel .stat-item .label {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+
+        .admin-panel .admin-ip-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .admin-panel .admin-ip-item {
+            display: grid;
+            grid-template-columns: 1fr 0.6fr 0.6fr 0.8fr;
+            gap: 0.3rem;
+            padding: 0.4rem 0.6rem;
+            background: rgba(15, 22, 41, 0.4);
+            border-radius: 8px;
+            font-size: 0.7rem;
+            align-items: center;
+            margin-bottom: 0.2rem;
+        }
+
+        .admin-panel .admin-ip-item.header {
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-panel .role-badge {
+            padding: 0.1rem 0.4rem;
+            border-radius: 20px;
+            font-size: 0.55rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .role-badge.admin {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        .role-badge.user {
+            background: rgba(74, 222, 128, 0.15);
+            color: #4ade80;
+        }
+
+        .admin-panel .btn-del {
+            background: none;
+            border: none;
+            color: #f87171;
+            cursor: pointer;
+            font-size: 0.7rem;
+            padding: 0.1rem 0.3rem;
+        }
+
+        .admin-panel .btn-del:active {
+            transform: scale(0.9);
+        }
+
+        .admin-panel .admin-add-ip {
+            display: grid;
+            grid-template-columns: 1fr 0.6fr 0.6fr auto;
+            gap: 0.4rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .admin-panel .admin-add-ip input,
+        .admin-panel .admin-add-ip select {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.4rem 0.5rem;
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            outline: none;
+        }
+
+        .admin-panel .admin-add-ip input:focus,
+        .admin-panel .admin-add-ip select:focus {
+            border-color: var(--primary);
+        }
+
+        .admin-panel .admin-add-ip .btn {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.7rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .admin-panel .admin-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+
+        .admin-panel .admin-actions .btn-sm {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.7rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .admin-panel .admin-actions .btn-primary {
+            background: linear-gradient(145deg, #ff7e2e, #d85d0e);
+            color: #0b0e1a;
+        }
+
+        .admin-panel .admin-actions .btn-secondary {
+            background: var(--bg-input);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .admin-panel .admin-actions .btn-danger {
+            background: rgba(248, 113, 113, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(248, 113, 113, 0.2);
+        }
+
+        .admin-panel .admin-actions .btn-sm:active {
+            transform: scale(0.95);
+        }
+
+        .admin-panel .logout-btn {
+            margin-top: 1rem;
+            width: 100%;
+            padding: 0.6rem;
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid rgba(248, 113, 113, 0.2);
+            border-radius: 10px;
+            color: #f87171;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .admin-panel .logout-btn:hover {
+            background: rgba(248, 113, 113, 0.2);
+        }
+
+        .admin-panel .logout-btn:active {
+            transform: scale(0.96);
+        }
+
+        @media (max-width: 480px) {
+            .admin-container {
+                padding: 1.5rem;
+            }
+            .admin-panel .admin-ip-item {
+                grid-template-columns: 1fr 0.5fr 0.5fr 0.6fr;
+                font-size: 0.6rem;
+                gap: 0.2rem;
+            }
+            .admin-panel .admin-add-ip {
+                grid-template-columns: 1fr;
+                gap: 0.3rem;
+            }
+            .admin-panel .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-page">
+        <div class="admin-container">
+            <!-- LOGIN FORM -->
+            <div id="loginForm">
+                <div class="logo">👑</div>
+                <h1>Admin Panel</h1>
+                <p class="subtitle">Đăng nhập để quản lý IP và cấp quyền admin</p>
+
+                <div class="error-msg" id="loginError">Sai tài khoản hoặc mật khẩu!</div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Tài khoản</label>
+                    <input type="text" id="adminUsername" placeholder="Nhập tài khoản..." value="Admin" />
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Mật khẩu</label>
+                    <input type="password" id="adminPassword" placeholder="Nhập mật khẩu..." />
+                </div>
+
+                <button class="btn-login" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                </button>
+
+                <div class="back-link">
+                    <a href="index.html"><i class="fas fa-arrow-left"></i> Quay lại trang chủ</a>
+                </div>
+            </div>
+
+            <!-- ADMIN PANEL -->
+            <div class="admin-panel" id="adminPanel">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;">
+                    <div>
+                        <h2 style="font-size:1.2rem;color:var(--text-primary);">
+                            <i class="fas fa-crown" style="color:#fbbf24;"></i> Quản trị IP
+                        </h2>
+                        <p style="font-size:0.7rem;color:var(--text-secondary);">
+                            <i class="fas fa-user-shield"></i> Đang đăng nhập: <strong id="adminUserDisplay">Admin</strong>
+                        </p>
+                    </div>
+                    <button class="btn-login" id="logoutBtn" style="width:auto;padding:0.4rem 1rem;font-size:0.75rem;background:rgba(248,113,113,0.15);color:#f87171;">
+                        <i class="fas fa-sign-out-alt"></i> Thoát
+                    </button>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats" id="adminStats">
+                    <div class="stat-item">
+                        <div class="number" id="statTotalIPs">0</div>
+                        <div class="label">Tổng IP</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="number" id="statAdmins">0</div>
+                        <div class="label">Admin</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="number" id="statUsers">0</div>
+                        <div class="label">User</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="number" id="statTodayUsed">0</div>
+                        <div class="label">Hôm nay</div>
+                    </div>
+                </div>
+
+                <!-- IP List -->
+                <div class="admin-ip-list" id="adminIpList">
+                    <div class="admin-ip-item header">
+                        <span>IP</span>
+                        <span>Lượt còn</span>
+                        <span>Role</span>
+                        <span>Hành động</span>
+                    </div>
+                </div>
+
+                <!-- Add IP -->
+                <div class="admin-add-ip">
+                    <input type="text" id="adminAddIp" placeholder="Nhập IP..." />
+                    <input type="number" id="adminAddLimit" placeholder="Số lượt" value="5" min="0" max="999" />
+                    <select id="adminAddRole">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <button class="btn btn-primary" id="adminAddBtn">Thêm</button>
+                </div>
+
+                <!-- Actions -->
+                <div class="admin-actions">
+                    <button class="btn-sm btn-primary" id="adminExportBtn">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <button class="btn-sm btn-secondary" id="adminImportBtn">
+                        <i class="fas fa-upload"></i> Import
+                    </button>
+                    <input type="file" id="adminImportFile" accept=".json" style="display:none;" />
+                    <button class="btn-sm btn-danger" id="adminResetBtn">
+                        <i class="fas fa-trash"></i> Reset All
+                    </button>
+                </div>
+
+                <div class="back-link" style="margin-top:1rem;">
+                    <a href="index.html"><i class="fas fa-arrow-left"></i> Quay lại trang chủ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast-container" id="toastContainer">
+        <div class="toast" id="toast">
+            <i class="fas fa-check-circle toast-icon"></i>
+            <span class="toast-message" id="toastMessage">Đã sao chép!</span>
+        </div>
+    </div>
+
+    <script src="ip-manager.js"></script>
+    <script>
+        // ============================================================
+        // ADMIN PAGE SCRIPT
+        // ============================================================
+
+        // Toast
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toastMessage');
+            const icon = toast.querySelector('.toast-icon');
+            
+            msg.textContent = message;
+            icon.className = isError ? 'fas fa-exclamation-circle toast-icon' : 'fas fa-check-circle toast-icon';
+            toast.className = 'toast' + (isError ? ' error' : '');
+            
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Render IP list
+        function renderAdminIPList() {
+            const container = document.getElementById('adminIpList');
+            const ips = IPManager.getAllIPs();
+            const currentIP = IPManager.getCurrentIP();
+            
+            let html = `
+                <div class="admin-ip-item header">
+                    <span>IP</span>
+                    <span>Lượt còn</span>
+                    <span>Role</span>
+                    <span>Hành động</span>
+                </div>
+            `;
+            
+            if (ips.length === 0) {
+                html += `<div class="admin-ip-item" style="text-align:center;color:var(--text-secondary);padding:0.8rem;">Chưa có IP nào</div>`;
+            } else {
+                for (const ip of ips) {
+                    const isCurrent = ip.ip === currentIP;
+                    html += `
+                        <div class="admin-ip-item" style="${isCurrent ? 'border:1px solid var(--primary);' : ''}">
+                            <span>${ip.ip} ${isCurrent ? '👈' : ''}</span>
+                            <span>${ip.remaining}</span>
+                            <span><span class="role-badge ${ip.role}">${ip.role.toUpperCase()}</span></span>
+                            <span>
+                                <button class="btn-del" onclick="removeIP('${ip.ip}')" title="Xóa IP">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <button class="btn-del" onclick="toggleRole('${ip.ip}')" title="Chuyển role" style="color:#fbbf24;">
+                                    <i class="fas fa-${ip.role === 'admin' ? 'user' : 'crown'}"></i>
+                                </button>
+                                <button class="btn-del" onclick="resetUsed('${ip.ip}')" title="Reset lượt dùng" style="color:#4ade80;">
+                                    <i class="fas fa-sync"></i>
+                                </button>
+                            </span>
+                        </div>
+                    `;
+                }
+            }
+            
+            container.innerHTML = html;
+            updateStats();
+        }
+
+        // Update stats
+        function updateStats() {
+            const stats = IPManager.getStats();
+            document.getElementById('statTotalIPs').textContent = stats.totalIPs;
+            document.getElementById('statAdmins').textContent = stats.adminCount;
+            document.getElementById('statUsers').textContent = stats.userCount;
+            document.getElementById('statTodayUsed').textContent = stats.todayUsed;
+        }
+
+        // Admin actions
+        function removeIP(ip) {
+            if (!confirm(`Xóa IP ${ip}?`)) return;
+            const result = IPManager.removeIP(ip);
+            if (result.success) {
+                renderAdminIPList();
+                showToast(result.message);
+            } else {
+                showToast(result.message, true);
+            }
+        }
+
+        function toggleRole(ip) {
+            const info = IPManager.getIPInfo(ip);
+            if (!info) return;
+            const newRole = info.role === 'admin' ? 'user' : 'admin';
+            const result = IPManager.updateRole(ip, newRole);
+            if (result.success) {
+                renderAdminIPList();
+                showToast(result.message);
+            } else {
+                showToast(result.message, true);
+            }
+        }
+
+        function resetUsed(ip) {
+            if (!confirm(`Reset lượt dùng cho ${ip}?`)) return;
+            const result = IPManager.resetUsed(ip);
+            if (result.success) {
+                renderAdminIPList();
+                showToast(result.message);
+            } else {
+                showToast(result.message, true);
+            }
+        }
+
+        // Export/Import
+        function exportData() {
+            const data = IPManager.exportData();
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ip_data_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('✅ Đã export dữ liệu IP');
+        }
+
+        function importData(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const result = IPManager.importData(e.target.result);
+                if (result.success) {
+                    renderAdminIPList();
+                    showToast(result.message);
+                } else {
+                    showToast(result.message, true);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Login function
+        function handleLogin() {
+            const username = document.getElementById('adminUsername').value.trim();
+            const password = document.getElementById('adminPassword').value.trim();
+            const errorEl = document.getElementById('loginError');
+            
+            // Kiểm tra tài khoản
+            if (username === 'Admin' && password === 'Dungtanz13998@') {
+                errorEl.classList.remove('show');
+                
+                // Lưu session admin
+                localStorage.setItem('ff_admin_session', 'true');
+                
+                // Hiển thị panel admin
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminPanel').classList.add('active');
+                document.getElementById('adminUserDisplay').textContent = username;
+                
+                renderAdminIPList();
+                showToast('✅ Đăng nhập thành công!');
+            } else {
+                errorEl.classList.add('show');
+                errorEl.textContent = 'Sai tài khoản hoặc mật khẩu!';
+                showToast('❌ Sai tài khoản hoặc mật khẩu!', true);
+            }
+        }
+
+        // Logout
+        function handleLogout() {
+            localStorage.removeItem('ff_admin_session');
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('adminPanel').classList.remove('active');
+            document.getElementById('adminPassword').value = '';
+            showToast('Đã đăng xuất');
+        }
+
+        // Check session on load
+        function checkSession() {
+            const session = localStorage.getItem('ff_admin_session');
+            if (session === 'true') {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminPanel').classList.add('active');
+                document.getElementById('adminUserDisplay').textContent = 'Admin';
+                renderAdminIPList();
+            }
+        }
+
+        // Enter key for login
+        document.getElementById('adminPassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                handleLogin();
+            }
+        });
+
+        document.getElementById('adminUsername').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('adminPassword').focus();
+            }
+        });
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Login
+            document.getElementById('loginBtn').addEventListener('click', handleLogin);
+            
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+            
+            // Add IP
+            document.getElementById('adminAddBtn').addEventListener('click', function() {
+                const ip = document.getElementById('adminAddIp').value.trim();
+                const limit = parseInt(document.getElementById('adminAddLimit').value) || 5;
+                const role = document.getElementById('adminAddRole').value;
+                
+                if (!ip) {
+                    showToast('Vui lòng nhập IP!', true);
+                    return;
+                }
+                
+                const result = IPManager.addIP(ip, role, limit);
+                if (result.success) {
+                    renderAdminIPList();
+                    document.getElementById('adminAddIp').value = '';
+                    showToast(result.message);
+                } else {
+                    showToast(result.message, true);
+                }
+            });
+            
+            document.getElementById('adminAddIp').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('adminAddBtn').click();
+                }
+            });
+            
+            // Export
+            document.getElementById('adminExportBtn').addEventListener('click', exportData);
+            
+            // Import
+            document.getElementById('adminImportBtn').addEventListener('click', function() {
+                document.getElementById('adminImportFile').click();
+            });
+            document.getElementById('adminImportFile').addEventListener('change', function(e) {
+                if (this.files.length > 0) {
+                    importData(this.files[0]);
+                    this.value = '';
+                }
+            });
+            
+            // Reset all
+            document.getElementById('adminResetBtn').addEventListener('click', function() {
+                const result = IPManager.resetAll();
+                if (result.success) {
+                    renderAdminIPList();
+                    showToast(result.message);
+                }
+            });
+            
+            // Check session
+            checkSession();
+        });
+
+        // Make functions global for onclick
+        window.removeIP = removeIP;
+        window.toggleRole = toggleRole;
+        window.resetUsed = resetUsed;
+    </script>
+</body>
+</html>
