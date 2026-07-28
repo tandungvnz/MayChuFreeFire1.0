@@ -1,5 +1,6 @@
 // ============================================================
-// FREE FIRE SENSITIVITY GENERATOR - MAIN APP
+// FREE FIRE SENSITIVITY GENERATOR - UNLIMITED VERSION
+// Tất cả user đều được vô hạn tạo độ nhạy
 // ============================================================
 
 // ============================================================
@@ -297,13 +298,7 @@ function generateSensitivity(device) {
 // ============================================================
 let currentDevice = null;
 let currentSensitivity = null;
-let currentIP = null;
 let deviceSource = 'auto';
-
-function updateLimitDisplay(remaining) {
-    document.getElementById('limitDisplay').textContent = remaining;
-    document.getElementById('navLimitBadge').textContent = remaining;
-}
 
 function updateStatus(text, type = 'green') {
     document.getElementById('statusText').textContent = text;
@@ -420,18 +415,6 @@ function useAutoDetectedDevice() {
 }
 
 function handleGenerate() {
-    if (!currentIP) {
-        showToast('Đang lấy IP...', true);
-        return;
-    }
-    
-    const limitResult = IPManager.checkLimit(currentIP);
-    if (!limitResult.allowed && limitResult.role !== 'admin') {
-        showToast('Bạn đã quá giới hạn lần thử cho phép! Vui lòng chờ ngày hôm sau', true);
-        updateStatus('Đã hết lượt hôm nay', 'red');
-        return;
-    }
-    
     if (!currentDevice) {
         const auto = detectDeviceFromUA();
         if (auto) {
@@ -447,13 +430,6 @@ function handleGenerate() {
     }
     
     withLoading(() => {
-        if (limitResult.role !== 'admin') {
-            IPManager.incrementUsed(currentIP);
-        }
-        
-        const remaining = IPManager.getRemainingDisplay(currentIP);
-        updateLimitDisplay(remaining);
-        
         const sens = generateSensitivity(currentDevice);
         if (!sens) {
             showToast('Không thể tạo độ nhạy!', true);
@@ -461,9 +437,8 @@ function handleGenerate() {
         }
         currentSensitivity = sens;
         renderSensitivity(sens);
-        const role = IPManager.getRole(currentIP);
-        updateStatus(`Đã tạo độ nhạy ${role === 'admin' ? '(Admin ∞)' : `(còn ${remaining} lượt)`}`, 'green');
-        showToast(`✅ Đã tạo độ nhạy! ${role === 'admin' ? 'Admin không giới hạn' : `Còn ${remaining} lượt`}`);
+        updateStatus('Đã tạo độ nhạy! (Không giới hạn)', 'green');
+        showToast('✅ Đã tạo độ nhạy thành công!');
     }, 'Đang tạo độ nhạy...');
 }
 
@@ -500,8 +475,6 @@ function copyResult() {
     let text = '🎯 FREE FIRE SENSITIVITY\n';
     text += `📱 ${currentDevice?.brand || ''} ${currentDevice?.model || 'Unknown'}\n`;
     text += `📅 ${new Date().toLocaleDateString('vi-VN')}\n`;
-    text += `🔍 Nguồn: ${deviceSource === 'auto' ? 'Tự động' : 'Nhập tay'}\n`;
-    text += `👤 Role: ${IPManager.getRole(currentIP)}\n`;
     text += '═'.repeat(30) + '\n';
     
     sensItems.forEach(item => {
@@ -526,28 +499,22 @@ function copyResult() {
 // ============================================================
 // 7. INITIALIZATION
 // ============================================================
-async function init() {
-    currentIP = await IPManager.getIP();
-    document.getElementById('ipDisplay').textContent = currentIP;
+function init() {
+    // Lấy IP hiển thị
+    fetch('https://api.ipify.org?format=json')
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('ipDisplay').textContent = data.ip || 'unknown';
+        })
+        .catch(() => {
+            document.getElementById('ipDisplay').textContent = 'unknown';
+        });
     
-    // Kiểm tra session admin từ admin.html
-    const adminSession = localStorage.getItem('ff_admin_session');
-    if (adminSession === 'true') {
-        // Nếu đã đăng nhập admin, tự động set role admin cho IP hiện tại
-        const info = IPManager.getOrCreateIP(currentIP);
-        if (info.role !== 'admin') {
-            IPManager.updateRole(currentIP, 'admin');
-            showToast('👑 Đã kích hoạt quyền Admin!');
-        }
-    }
+    // Hiển thị không giới hạn
+    document.getElementById('userRoleDisplay').textContent = '👤 User (∞)';
+    document.getElementById('navLimitBadge').textContent = '∞';
     
-    const role = IPManager.getRole(currentIP);
-    const remaining = IPManager.getRemainingDisplay(currentIP);
-    
-    document.getElementById('userRoleDisplay').textContent = role === 'admin' ? '👑 Admin' : '👤 User';
-    document.getElementById('maxLimitDisplay').textContent = role === 'admin' ? '∞' : '5';
-    updateLimitDisplay(remaining);
-    
+    // Tự động phát hiện máy
     const autoDevice = detectDeviceFromUA();
     if (autoDevice) {
         autoDevice.performanceScore = calculatePerformanceScore(autoDevice);
@@ -555,17 +522,15 @@ async function init() {
         deviceSource = 'auto';
         document.getElementById('detectedDeviceName').textContent = `${autoDevice.brand} ${autoDevice.model}`;
         renderDevice(autoDevice, 'auto');
-        updateStatus(`Đã phát hiện: ${autoDevice.brand} ${autoDevice.model}`, 'green');
+        updateStatus(`Đã phát hiện: ${autoDevice.brand} ${autoDevice.model} (Không giới hạn)`, 'green');
         
-        if (role === 'admin' || remaining > 0) {
-            setTimeout(() => {
-                const sens = generateSensitivity(autoDevice);
-                if (sens) {
-                    currentSensitivity = sens;
-                    renderSensitivity(sens);
-                }
-            }, 600);
-        }
+        setTimeout(() => {
+            const sens = generateSensitivity(autoDevice);
+            if (sens) {
+                currentSensitivity = sens;
+                renderSensitivity(sens);
+            }
+        }, 600);
     } else {
         updateStatus('Không phát hiện được máy - Hãy nhập tay', 'orange');
     }
@@ -611,13 +576,8 @@ document.addEventListener('DOMContentLoaded', function() {
         sidebar.classList.remove('open');
         overlay.classList.remove('active');
     });
-    document.getElementById('menuAdmin').addEventListener('click', function() {
-        // Chuyển đến admin.html
-        window.location.href = 'admin.html';
-    });
     document.getElementById('menuInfo').addEventListener('click', function() {
-        const role = IPManager.getRole(currentIP);
-        showToast(`📖 ${role === 'admin' ? 'Admin: Không giới hạn' : 'Mỗi IP 5 lượt/ngày'}`);
+        showToast('📖 Không giới hạn số lượt tạo độ nhạy');
         sidebar.classList.remove('open');
         overlay.classList.remove('active');
     });
