@@ -190,7 +190,6 @@
                         <span>Role</span>
                         <span>Hành động</span>
                     </div>
-                    <!-- Danh sách IP sẽ được render ở đây -->
                 </div>
                 <div class="admin-add-ip">
                     <input type="text" id="adminAddIp" placeholder="Nhập IP..." />
@@ -200,6 +199,18 @@
                         <option value="admin">Admin</option>
                     </select>
                     <button class="btn btn-primary btn-sm" id="adminAddBtn">Thêm</button>
+                </div>
+                <div class="admin-actions" style="display:flex;gap:0.5rem;margin-top:0.8rem;padding-top:0.8rem;border-top:1px solid var(--border-color);flex-wrap:wrap;">
+                    <button class="btn btn-sm btn-primary" id="adminExportBtn" style="background:linear-gradient(145deg,#ff7e2e,#d85d0e);color:#0b0e1a;padding:0.4rem 1rem;border-radius:30px;border:none;cursor:pointer;font-weight:600;">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <button class="btn btn-sm btn-secondary" id="adminImportBtn" style="background:var(--bg-input);color:var(--text-primary);padding:0.4rem 1rem;border-radius:30px;border:1px solid var(--border-color);cursor:pointer;font-weight:600;">
+                        <i class="fas fa-upload"></i> Import
+                    </button>
+                    <input type="file" id="adminImportFile" accept=".json" style="display:none;" />
+                    <button class="btn btn-sm btn-danger" id="adminResetBtn" style="background:rgba(248,113,113,0.15);color:#f87171;padding:0.4rem 1rem;border-radius:30px;border:1px solid rgba(248,113,113,0.2);cursor:pointer;font-weight:600;">
+                        <i class="fas fa-trash"></i> Reset All
+                    </button>
                 </div>
             </div>
         </div>
@@ -213,6 +224,7 @@
         </div>
     </div>
 
+    <script src="ip-manager.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
