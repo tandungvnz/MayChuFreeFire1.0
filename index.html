@@ -23,6 +23,10 @@
                 <i class="fas fa-home"></i>
                 <span>Trang chủ</span>
             </div>
+            <div class="menu-item" id="menuDeviceInfo">
+                <i class="fas fa-microchip"></i>
+                <span>Thông tin máy</span>
+            </div>
             <div class="menu-item" id="menuHistory">
                 <i class="fas fa-history"></i>
                 <span>Lịch sử</span>
@@ -61,53 +65,72 @@
             </div>
             <div class="nav-actions">
                 <span class="nav-limit-badge" id="navLimitBadge">5</span>
+                <button class="nav-device-btn" id="navDeviceBtn" title="Thông tin máy">
+                    <i class="fas fa-mobile-alt"></i>
+                </button>
             </div>
         </nav>
 
         <!-- STATUS BAR -->
         <div class="status-bar" id="statusBar">
-            <span id="statusText">Sẵn sàng tạo độ nhạy</span>
+            <span id="statusText">Đang tải thông tin thiết bị...</span>
             <span id="statusIcon" class="status-dot green"></span>
         </div>
 
         <!-- HERO SECTION -->
         <div class="hero-section">
             <div class="hero-icon">🔥</div>
-            <h1 class="hero-title">AI <span style="color:#ff6a00;">Sensi</span><br />Generator</h1>
-            <p class="hero-desc">Nhập bất kỳ từ khóa nào về điện thoại, AI sẽ tự động nhận diện</p>
+            <h1 class="hero-title">Tạo độ nhạy <br />Free Fire</h1>
+            <p class="hero-desc">Tự động nhận diện máy bạn đang dùng hoặc nhập tay</p>
+        </div>
+
+        <!-- DEVICE DETECTED INFO -->
+        <div class="device-detected" id="deviceDetected">
+            <div class="detected-info">
+                <i class="fas fa-check-circle" style="color:#4ade80;"></i>
+                <span>Máy bạn đang dùng: <strong id="detectedDeviceName">Đang phát hiện...</strong></span>
+            </div>
+            <button class="btn btn-sm btn-use-device" id="useDeviceBtn">
+                <i class="fas fa-arrow-right"></i> Dùng máy này
+            </button>
         </div>
 
         <!-- INPUT SECTION -->
         <div class="input-section">
+            <div class="input-label">
+                <span><i class="fas fa-pen"></i> Hoặc nhập tên máy khác</span>
+                <span class="input-hint">VD: iPhone 15 Pro Max, Galaxy S23</span>
+            </div>
             <div class="input-wrapper">
-                <i class="fas fa-robot input-icon"></i>
+                <i class="fas fa-mobile-alt input-icon"></i>
                 <input 
                     type="text" 
                     id="phoneInput" 
-                    placeholder='VD: "con chip snap mới nhất", "iphone 14 pro xanh", "samsung gập"' 
+                    placeholder="Nhập tên điện thoại..."
                     autocomplete="off"
                 />
                 <button class="clear-input" id="clearInput" style="display:none;">
                     <i class="fas fa-times-circle"></i>
                 </button>
-            </div>
-            <div class="button-group">
-                <button class="btn btn-detect" id="detectBtn">
-                    <i class="fas fa-brain"></i>
-                    <span>AI Nhận diện</span>
-                </button>
-                <button class="btn btn-generate" id="generateBtn">
-                    <i class="fas fa-bolt"></i>
-                    <span>Tạo độ nhạy</span>
+                <button class="btn-detect-sm" id="detectBtn">
+                    <i class="fas fa-search"></i>
                 </button>
             </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="button-group-main">
+            <button class="btn btn-generate-full" id="generateBtn">
+                <i class="fas fa-bolt"></i>
+                <span>Tạo độ nhạy</span>
+            </button>
         </div>
 
         <!-- LOADING -->
         <div class="loading-overlay" id="loadingOverlay">
             <div class="loading-content">
                 <div class="spinner"></div>
-                <p class="loading-text" id="loadingText">AI đang phân tích từ khóa...</p>
+                <p class="loading-text" id="loadingText">Đang tạo độ nhạy...</p>
             </div>
         </div>
 
@@ -115,14 +138,10 @@
         <div id="deviceCard" class="card" style="display:none;">
             <div class="card-header">
                 <i class="fas fa-microchip"></i>
-                <span>AI PHÂN TÍCH THIẾT BỊ</span>
-                <span style="font-size:0.6rem;color:#ff6a00;" id="matchConfidence"></span>
+                <span>THÔNG TIN THIẾT BỊ</span>
+                <span style="font-size:0.6rem;color:#4ade80;" id="sourceBadge">📱 Tự động</span>
             </div>
             <div class="device-grid" id="deviceGrid"></div>
-            <div style="margin-top:0.8rem;padding-top:0.5rem;border-top:1px solid var(--border-color);font-size:0.65rem;color:var(--text-secondary);">
-                <i class="fas fa-magic"></i> 
-                <span id="aiReason">AI suy luận từ từ khóa</span>
-            </div>
         </div>
 
         <!-- SENSITIVITY CARD -->
